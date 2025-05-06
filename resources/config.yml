@@ -1,0 +1,14 @@
+# The URL where your SurrealDB server is running and accepting SQL queries.
+endpoint: "http://127.0.0.1:8000/sql"
+
+# The namespace used to group multiple databases logically in SurrealDB.
+namespace: "bloomcraft"                  
+
+# The specific database within the namespace that your plugin will use.
+database: "bloomcraft"                   
+
+# The username for authenticating with SurrealDB.
+username: "root"                         
+
+# The password for the above username to access SurrealDB.
+password: "root"                         
