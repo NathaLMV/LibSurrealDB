@@ -255,7 +255,7 @@ For questions or support, please open an issue in the [GitHub repository](https:
 
 ### v1.0.0 - 2025-05-06
 
--Full rewrite of the asynchronous task system using `AsyncTask` to avoid `asyncWorker` crashes.
+- Full rewrite of the asynchronous task system using `AsyncTask` to avoid `asyncWorker` crashes.
 
 - Implementation of `PromiseHandler` for structured management of SurrealDB responses.
 
