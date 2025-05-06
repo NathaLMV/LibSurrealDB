@@ -24,9 +24,9 @@ use natha\surrealdb\provider\SurrealProvider;
 class QueryManager {
   
   public function __construct(private SurrealProvider $provider) {}
-  
+
   public function createTable(string $tableName,string $callbackClass,string $callbackMethod,string $schema = "SCHEMALESS",array $extraData = []): void {
-    $this->provider->createTable($tableName, $schema, $callbackClass, $callbackMethod, $extraData);
+    $this->provider->createTable($tableName, $callbackClass, $callbackMethod, $schema, $extraData);
   }
 
   public function insertData(string $tableName,array $data,string $callbackClass,string $callbackMethod,array $extraData = []): void {
@@ -36,59 +36,56 @@ class QueryManager {
   public function selectData(string $tableName,string $callbackClass,string $callbackMethod,string $conditions = "",array $extraData = []): void {
     $this->provider->selectData($tableName, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function dropTable(string $table, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->dropTable($table, $callbackClass, $callbackMethod, $extraData);
+
+  public function dropTable(string $tableName,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->dropTable($tableName, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function alterTable(string $table, string $schema, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->alterTable($table, $schema, $callbackClass, $callbackMethod, $extraData);
+
+  public function alterTable(string $tableName,string $schema,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->alterTable($tableName, $schema, $callbackClass, $callbackMethod, $extraData);
   }
-    
-  public function update(string $table, array $data, string $conditions, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->updateData($table, $data, $conditions, $callbackClass, $callbackMethod, $extraData);
+
+  public function update(string $tableName,array $data,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->updateData($tableName, $data, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function patch(string $table, array $patch, string $conditions, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->patchData($table, $patch, $conditions, $callbackClass, $callbackMethod, $extraData);
+
+  public function patch(string $tableName,array $patch,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->patchData($tableName, $patch, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function delete(string $table, string $conditions, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->deleteData($table, $conditions, $callbackClass, $callbackMethod, $extraData);
+
+  public function delete(string $tableName,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->deleteData($tableName, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function count(string $table, string $conditions, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->count($table, $conditions, $callbackClass, $callbackMethod, $extraData);
+
+  public function count(string $tableName,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->count($tableName, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function raw(string $sql, string $callbackClass, string $callbackMethod, array $extraData = []): void {
+
+  public function rawQuery(string $sql,string $callbackClass,string $callbackMethod,array $extraData = []): void {
     $this->provider->rawQuery($sql, $callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function info(string $callbackClass, string $callbackMethod, array $extraData = []): void {
+
+  public function info(string $callbackClass,string $callbackMethod,array $extraData = []): void {
     $this->provider->info($callbackClass, $callbackMethod, $extraData);
   }
-  public function health(string $callbackClass, string $callbackMethod, array $extraData = []): void {
+
+  public function healthCheck(string $callbackClass,string $callbackMethod,array $extraData = []): void {
     $this->provider->healthCheck($callbackClass, $callbackMethod, $extraData);
   }
-  
-  public function defineIndex(string $table, string $field, string $indexName, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->defineIndex($table, $field, $indexName, $callbackClass, $callbackMethod, $extraData);
+
+  public function defineIndex(string $tableName,string $field,string $indexName,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->defineIndex($tableName, $field, $indexName, $callbackClass, $callbackMethod, $extraData);
   }
 
-  public function removeIndex(string $indexName, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->removeIndex($indexName, $callbackClass, $callbackMethod, $extraData);
+  public function removeIndex(string $tableName,string $indexName,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->removeIndex($tableName, $indexName, $callbackClass, $callbackMethod, $extraData);
   }
 
-  public function defineFunction(string $name, string $parameters, string $body, string $callbackClass, string $callbackMethod, array $extraData = []): void {
+  public function defineFunction(string $name,string $parameters,string $body,string $callbackClass,string $callbackMethod,array $extraData = []): void {
     $this->provider->defineFunction($name, $parameters, $body, $callbackClass, $callbackMethod, $extraData);
   }
 
-  public function runTransaction(array $queries, string $callbackClass, string $callbackMethod, array $extraData = []): void {
+  public function runTransaction(array $queries,string $callbackClass,string $callbackMethod,array $extraData = []): void {
     $this->provider->runTransaction($queries, $callbackClass, $callbackMethod, $extraData);
-  }
-
-  public function rawQuery(string $query, string $callbackClass, string $callbackMethod, array $extraData = []): void {
-    $this->provider->rawQuery($query, $callbackClass, $callbackMethod, $extraData);
   }
 }
