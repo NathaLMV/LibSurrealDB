@@ -30,65 +30,68 @@ class QueryAsyncTask extends AsyncTask {
       if (empty($this->query)) {
         throw new \RuntimeException("Query cannot be empty.");
       }
+      $headers = [
+        "Accept: application/json",
+        "Content-Type: text/plain",
+        "Surreal-NS: {$this->namespace}",
+        "Surreal-DB: {$this->database}",
+        "Authorization: Basic " . base64_encode("{$this->username}:{$this->password}")
+      ];
       $ch = curl_init($this->endpoint);
       curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $this->query,
-        CURLOPT_HTTPHEADER => [
-          "Accept: application/json",
-          "Content-Type: text/plain",
-          "NS: {$this->namespace}",
-          "DB: {$this->database}",
-          "Authorization: Basic " . base64_encode("{$this->username}:{$this->password}")
-        ]
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => $this->query,
+        CURLOPT_HTTPHEADER     => $headers,
+        CURLOPT_TIMEOUT        => 10,
       ]);
-      $response = curl_exec($ch);
-      $error = curl_error($ch);
+      $response   = curl_exec($ch);
+      $error      = curl_error($ch);
+      $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
       curl_close($ch);
+      $decoded = $response ? json_decode($response, true) : null;
       $this->setResult([
-        "response" => $response ?: null,
-        "error" => $error ?: '',
+        "response"   => $decoded,
+        "error"      => $error,
+        "status"     => $statusCode,
         "ownerClass" => $this->ownerClass,
-        "ownerMethod" => $this->ownerMethod,
-        "extraData" => $this->extraDataJson
+        "ownerMethod"=> $this->ownerMethod,
+        "extraData"  => $this->extraDataJson
       ]);
     } catch (\Throwable $e) {
       $this->setResult([
-        "response" => null,
-        "error" => "Excepción en onRun: " . $e->getMessage(),
+        "response"   => null,
+        "error"      => "Exception in onRun: " . $e->getMessage(),
+        "status"     => 0,
         "ownerClass" => $this->ownerClass,
-        "ownerMethod" => $this->ownerMethod,
-        "extraData" => $this->extraDataJson
+        "ownerMethod"=> $this->ownerMethod,
+        "extraData"  => $this->extraDataJson
       ]);
     }
   }
   
   public function onCompletion(): void {
-    $result = $this->getResult();
-    $ownerClass = $result["ownerClass"] ?? null;
+    $result      = $this->getResult();
+    $ownerClass  = $result["ownerClass"]  ?? null;
     $ownerMethod = $result["ownerMethod"] ?? null;
-    $extraData = json_decode($result["extraData"] ?? "[]", true);
+    $extraData   = json_decode($result["extraData"] ?? "[]", true);
     if (!$ownerClass || !$ownerMethod) {
-      Server::getInstance()->getLogger()->error("SurrealDB: Callback no definido correctamente.");
+      Server::getInstance()->getLogger()->error("SurrealDB: Invalid callback information.");
       return;
     }
-    if (!class_exists($ownerClass)) {
-      Server::getInstance()->getLogger()->error("SurrealDB: La clase callback '{$ownerClass}' no existe.");
-      return;
-    }
-    if (!method_exists($ownerClass, $ownerMethod)) {
-      Server::getInstance()->getLogger()->error("SurrealDB: El método '{$ownerMethod}' no existe en la clase '{$ownerClass}'.");
+    if (!class_exists($ownerClass) || !method_exists($ownerClass, $ownerMethod)) {
+      Server::getInstance()->getLogger()->error("SurrealDB: Callback {$ownerClass}::{$ownerMethod} not found.");
       return;
     }
     try {
-      call_user_func([$ownerClass, $ownerMethod],[
-        "response" => $result["response"],
-        "error" => $result["error"],
-        "extraData" => $extraData
+      call_user_func([$ownerClass, $ownerMethod], [
+        "response"   => $result["response"],
+        "error"      => $result["error"],
+        "status"     => $result["status"],
+        "extraData"  => $extraData
       ]);
     } catch (\Throwable $e) {
-      Server::getInstance()->getLogger()->error("SurrealDB: Error ejecutando callback '{$ownerId}::{$ownerMethod}': " . $e->getMessage());
+            Server::getInstance()->getLogger()->error("SurrealDB: Exception in callback {$ownerClass}::{$ownerMethod} - " . $e->getMessage());
     }
   }
 }
