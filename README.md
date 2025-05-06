@@ -255,12 +255,18 @@ For questions or support, please open an issue in the [GitHub repository](https:
 
 ### v1.0.0 - 2025-05-06
 
-- Reescritura completa del sistema de tareas asíncronas usando `AsyncTask` para evitar bloqueos del `asyncWorker`.
-- Implementación de `PromiseHandler` para manejo estructurado de respuestas de SurrealDB.
-- Incorporación de `SurrealQueryTask` para ejecutar consultas HTTP sin bloquear el hilo principal.
-- Mejoras en `QueryManager` para delegar operaciones de forma modular.
-- Nueva clase `SurrealProvider` para gestionar configuración y conexión con el servidor.
-- Soporte para múltiples operaciones avanzadas (transacciones, índices, funciones, consultas SQL nativas).
-- Eliminación del uso directo de `file_get_contents()` o cURL desde el main thread.
+-Full rewrite of the asynchronous task system using `AsyncTask` to avoid `asyncWorker` crashes.
+
+- Implementation of `PromiseHandler` for structured management of SurrealDB responses.
+
+- Incorporation of `SurrealQueryTask` to execute HTTP queries without blocking the main thread.
+
+- Improvements in `QueryManager` to delegate operations in a modular way.
+
+- New class `SurrealProvider` to manage configuration and connection with the server.
+
+- Support for multiple advanced operations (transactions, indexes, functions, native SQL queries).
+
+- Removal of the direct use of `file_get_contents()` or cURL from the main thread.
 
 ⭐️ Don't forget to star the [repository](https://github.com/NathaLMV/LibSurrealDB) if you found it useful! ⭐️
