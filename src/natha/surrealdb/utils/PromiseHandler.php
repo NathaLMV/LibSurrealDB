@@ -21,23 +21,19 @@ namespace natha\surrealdb\utils;
 class PromiseHandler {
   
   public static function handle(array $result, callable $onSuccess, callable $onError): void {
-    $response = $result['response'] ?? null;
-    $error = $result['error'] ?? '';
-    $extra = $result['extraData'] ?? [];
-    if ($response === null) {
-      $onError('Empty response received.', $extra);
+    $resp  = $result['response']   ?? null;
+    $extra = $result['extraData']  ?? [];
+    if (!is_array($resp) || !isset($resp[0]['status'])) {
+      $onError("Invalid response format", $extra);
       return;
     }
-    if (!empty($error)) {
-      $onError($error, $extra);
+    $status = $resp[0]['status'];
+    if ($status !== "OK") {
+      $message = is_scalar($resp[0]['result']) ? $resp[0]['result'] : json_encode($resp[0]['result']);
+      $onError($message, $extra);
       return;
     }
-    $decoded = json_decode($response, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-      $onError("Error decoding JSON: " . json_last_error_msg(), $extra);
-      return;
-    }
-    $rows = $decoded[0]['result'] ?? [];
+    $rows = $resp[0]['result'] ?? [];
     $onSuccess($rows, $extra);
   }
 }
