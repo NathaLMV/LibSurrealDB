@@ -33,8 +33,8 @@ class QueryManager {
     $this->provider->insertData($tableName, $data, $callbackClass, $callbackMethod, $extraData);
   }
 
-  public function selectData(string $tableName,string $callbackClass,string $callbackMethod,string $conditions = "",array $extraData = []): void {
-    $this->provider->selectData($tableName, $conditions, $callbackClass, $callbackMethod, $extraData);
+  public function selectData(string $data,string $tableName,string $conditions = "",string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $this->provider->selectData($data,$tableName, $conditions, $callbackClass, $callbackMethod, $extraData);
   }
 
   public function dropTable(string $tableName,string $callbackClass,string $callbackMethod,array $extraData = []): void {
