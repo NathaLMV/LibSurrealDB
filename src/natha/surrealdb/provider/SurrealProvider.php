@@ -73,8 +73,8 @@ class SurrealProvider {
     $this->executeQuery($sql, $callbackClass, $callbackMethod, $extraData);
   }
 
-  public function selectData(string $table,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
-    $sql = "SELECT * FROM {$table} {$conditions};";
+  public function selectData(string $data,string $table,string $conditions,string $callbackClass,string $callbackMethod,array $extraData = []): void {
+    $sql = "SELECT {$data} FROM {$table} {$conditions};";
     $this->executeQuery($sql, $callbackClass, $callbackMethod, $extraData);
   }
 
